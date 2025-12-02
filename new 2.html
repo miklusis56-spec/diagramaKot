@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privaloma karo tarnyba - Apklausos rezultatai</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f9fafb;
+            padding: 20px;
+            color: #1f2937;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #f3f4f6;
+        }
+        
+        .btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #e5e7eb;
+        }
+        
+        th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        th.center {
+            text-align: center;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        
+        td {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        td.center {
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .green { color: #059669; }
+        .red { color: #dc2626; }
+        .gray { color: #6b7280; }
+        
+        .chart-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            min-height: 450px;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            min-height: 400px;
+        }
+        
+        canvas {
+            display: block;
+            width: 100% !important;
+            height: 400px !important;
+        }
+        
+        .info-box {
+            border-left: 4px solid #3b82f6;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .info-box.purple {
+            border-left-color: #8b5cf6;
+            background: #f5f3ff;
+        }
+        
+        .info-box.gray {
+            border-left-color: #6b7280;
+            background: #f3f4f6;
+        }
+        
+        .info-box ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .info-box li {
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .btn-group {
+                display: none;
+            }
+            .section {
+                display: block !important;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Privaloma karo tarnyba - Apklausos rezultatai</h1>
+        
+        <div class="btn-group">
+            <button class="btn active" onclick="showSection('gender')">Pagal lytį</button>
+            <button class="btn" onclick="showSection('age')">Pagal amžių</button>
+        </div>
+        
+        <!-- PAGAL LYTĮ -->
+        <div id="gender" class="section active">
+            <h2>Palyginimas pagal lytį</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Klausimas</th>
+                            <th class="center" colspan="3">Moterys (n=4)</th>
+                            <th class="center" colspan="3">Vyrai (n=5)</th>
+                        </tr>
+                        <tr style="background: #f3f4f6;">
+                            <th></th>
+                            <th class="center green">Sutinku</th>
+                            <th class="center red">Nesutinku</th>
+                            <th class="center gray">Nežinau</th>
+                            <th class="center green">Sutinku</th>
+                            <th class="center red">Nesutinku</th>
+                            <th class="center gray">Nežinau</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>K1: Pilietinė pareiga</td>
+                            <td class="center green">2</td>
+                            <td class="center red">2</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">3</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">2</td>
+                        </tr>
+                        <tr>
+                            <td>K2: Valstybės saugumas</td>
+                            <td class="center green">3</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">5</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                        </tr>
+                        <tr>
+                            <td>K3: Disciplina ir vienybė</td>
+                            <td class="center green">3</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">1</td>
+                            <td class="center green">5</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                        </tr>
+                        <tr>
+                            <td>K4: Pakankamai karių</td>
+                            <td class="center green">3</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">2</td>
+                            <td class="center red">2</td>
+                            <td class="center gray">1</td>
+                        </tr>
+                        <tr>
+                            <td>K5: Patriotizmas</td>
+                            <td class="center green">3</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">2</td>
+                            <td class="center red">2</td>
+                            <td class="center gray">1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Vizualizacija pagal lytį</h3>
+                <div class="chart-wrapper">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3>Pagrindiniai skirtumai:</h3>
+                <ul>
+                    <li>K1 (Pilietinė pareiga): Moterys pasiskirsčiusios pusiau (2-2), vyrai daugiau sutinka (3) ar nežino (2)</li>
+                    <li>K2-K3: Visi vyrai sutinka (5/5), moterys - didelė dauguma sutinka (3-4/4)</li>
+                    <li>K4-K5: Vyrai labiau suskaldyti (2 sutinku vs 2 nesutinku), moterys daugiau sutinka (3/4)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- PAGAL AMŽIŲ -->
+        <div id="age" class="section">
+            <h2>Palyginimas pagal amžių</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Klausimas</th>
+                            <th class="center" colspan="3">18-25 (n=5)</th>
+                            <th class="center" colspan="3">26-40 (n=2)</th>
+                            <th class="center" colspan="3">41+ (n=2)</th>
+                        </tr>
+                        <tr style="background: #f3f4f6;">
+                            <th></th>
+                            <th class="center green">S</th>
+                            <th class="center red">N</th>
+                            <th class="center gray">Nž</th>
+                            <th class="center green">S</th>
+                            <th class="center red">N</th>
+                            <th class="center gray">Nž</th>
+                            <th class="center green">S</th>
+                            <th class="center red">N</th>
+                            <th class="center gray">Nž</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>K1: Pilietinė pareiga</td>
+                            <td class="center green">3</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">2</td>
+                            <td class="center green">1</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">1</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                        </tr>
+                        <tr>
+                            <td>K2: Valstybės saugumas</td>
+                            <td class="center green">5</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">2</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">1</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                        </tr>
+                        <tr>
+                            <td>K3: Disciplina ir vienybė</td>
+                            <td class="center green">5</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">2</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">1</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">1</td>
+                        </tr>
+                        <tr>
+                            <td>K4: Pakankamai karių</td>
+                            <td class="center green">2</td>
+                            <td class="center red">2</td>
+                            <td class="center gray">1</td>
+                            <td class="center green">2</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">1</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                        </tr>
+                        <tr>
+                            <td>K5: Patriotizmas</td>
+                            <td class="center green">2</td>
+                            <td class="center red">2</td>
+                            <td class="center gray">1</td>
+                            <td class="center green">2</td>
+                            <td class="center red">0</td>
+                            <td class="center gray">0</td>
+                            <td class="center green">1</td>
+                            <td class="center red">1</td>
+                            <td class="center gray">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Vizualizacija pagal amžių</h3>
+                <div class="chart-wrapper">
+                    <canvas id="ageChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="info-box purple">
+                <h3>Pagrindiniai skirtumai:</h3>
+                <ul>
+                    <li>18-25 metų: Stipriai palaiko K2-K3 (visi 5), bet suskaldyti dėl K4-K5 (po 2-2)</li>
+                    <li>26-40 metų: Nuosekliausiai palaiko visus teiginius (1-2 sutinku visiems klausimams)</li>
+                    <li>41+ metų: Labiausiai suskaldyti - pusiau (1-1) beveik visiems klausimams</li>
+                    <li>K2-K3 gauna stipriausią palaikymą visose amžiaus grupėse</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- BENDROS ĮŽVALGOS -->
+        <div class="info-box gray">
+            <h3>Bendros įžvalgos</h3>
+            <p style="margin-top: 0.5rem;"><strong>Dalyviai:</strong> 4 moterys, 5 vyrai (vienas neatskleidė lyties/amžiaus)</p>
+            <p style="margin-top: 0.25rem;"><strong>Stipriausias sutarimas:</strong> K2 ir K3 (apie saugumą ir discipliną) - mažiausiai prieštaravimų</p>
+            <p style="margin-top: 0.25rem;"><strong>Didžiausias suskaldymas:</strong> K4 ir K5 (sistemos būtinybė ir patriotizmas) - ypač tarp vyrų 18-25</p>
+            <p style="margin-top: 0.25rem;"><strong>Amžiaus įtaka:</strong> 26-40 metų grupė palaiko labiausiai, 41+ labiausiai kritiškai nusiteikę</p>
+        </div>
+    </div>
+    
+    <script>
+        // Laukti, kol visas puslapis užsikraus
+        window.addEventListener('load', function() {
+            initCharts();
+        });
+
+        function initCharts() {
+            // Patikrinti ar Chart.js užsikrovė
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js nepasikrovė');
+                setTimeout(initCharts, 500);
+                return;
+            }
+
+            // Pagal lytį grafikas
+            try {
+                const genderCanvas = document.getElementById('genderChart');
+                if (genderCanvas) {
+                    const genderCtx = genderCanvas.getContext('2d');
+                    if (genderCtx) {
+                        new Chart(genderCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['K1: Pilietinė pareiga', 'K2: Valstybės saugumas', 'K3: Disciplina ir vienybė', 'K4: Pakankamai karių', 'K5: Patriotizmas'],
+                                datasets: [
+                                    {
+                                        label: 'Moterys (Sutinku)',
+                                        data: [2, 3, 3, 3, 3],
+                                        backgroundColor: '#10b981'
+                                    },
+                                    {
+                                        label: 'Moterys (Nesutinku)',
+                                        data: [2, 1, 0, 1, 1],
+                                        backgroundColor: '#ef4444'
+                                    },
+                                    {
+                                        label: 'Vyrai (Sutinku)',
+                                        data: [3, 5, 5, 2, 2],
+                                        backgroundColor: '#3b82f6'
+                                    },
+                                    {
+                                        label: 'Vyrai (Nesutinku)',
+                                        data: [0, 0, 0, 2, 2],
+                                        backgroundColor: '#f97316'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top'
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Klaida kuriant gender grafiką:', error);
+            }
+            
+            // Pagal amžių grafikas
+            try {
+                const ageCanvas = document.getElementById('ageChart');
+                if (ageCanvas) {
+                    const ageCtx = ageCanvas.getContext('2d');
+                    if (ageCtx) {
+                        new Chart(ageCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['K1: Pilietinė pareiga', 'K2: Valstybės saugumas', 'K3: Disciplina ir vienybė', 'K4: Pakankamai karių', 'K5: Patriotizmas'],
+                                datasets: [
+                                    {
+                                        label: '18-25 (Sutinku)',
+                                        data: [3, 5, 5, 2, 2],
+                                        backgroundColor: '#8b5cf6'
+                                    },
+                                    {
+                                        label: '18-25 (Nesutinku)',
+                                        data: [0, 0, 0, 2, 2],
+                                        backgroundColor: '#f59e0b'
+                                    },
+                                    {
+                                        label: '26-40 (Sutinku)',
+                                        data: [1, 2, 2, 2, 2],
+                                        backgroundColor: '#10b981'
+                                    },
+                                    {
+                                        label: '26-40 (Nesutinku)',
+                                        data: [1, 0, 0, 0, 0],
+                                        backgroundColor: '#ef4444'
+                                    },
+                                    {
+                                        label: '41+ (Sutinku)',
+                                        data: [1, 1, 1, 1, 1],
+                                        backgroundColor: '#3b82f6'
+                                    },
+                                    {
+                                        label: '41+ (Nesutinku)',
+                                        data: [1, 1, 0, 1, 1],
+                                        backgroundColor: '#ec4899'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'top'
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Klaida kuriant age grafiką:', error);
+            }
+        }
+        
+        // Funkcija keisti skyrius
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Pabandyti atnaujinti grafikus po skyriaus keitimo
+            setTimeout(function() {
+                if (typeof Chart !== 'undefined') {
+                    Chart.instances.forEach(chart => {
+                        chart.resize();
+                    });
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
